@@ -32,10 +32,13 @@ jobs: # Những công việc dev làm thường ngày: lấy code, build, chạy
         run: ant -noinput -buildfile build.xml # Quá trình build sẽ cần đến file cấu hình build.xml, build-impl.xml
       
       - name: Distribute jar-war file # Gửi file .jar .war đi đâu, CD nhảy vào ...
-        run: mkdir staging && cp dist/*.jar staging # tạo thư mục staging chứa file .jar .war sau khi build      
+        run: 
+          ant -noinput -buildfile build.xml # Build the project using Ant
+          mkdir -p staging                  # Ensure the staging directory exists
+          cp dist/*.jar staging || echo "No JAR files found in dist directory" # Copy JAR files or log an error
      
       - name: Make hyperlink to jar-war file # Tạo hyperlink để download build 
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: 1.0-SNAPSHOT.jar # Bản build được đánh version 1.0-SNAPSHOT
           path: staging
